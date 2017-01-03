@@ -4,7 +4,8 @@
 import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import {Hero} from './hero';
-import {Http} from '@angular/http';
+import {Http, Response} from '@angular/http';
+import {Observable} from "rxjs";
 
 @Injectable()
 export class HeroService {
@@ -17,6 +18,12 @@ export class HeroService {
   }
   getHero(id: number): Promise<Hero> {
     return this.getHeroes().then(heroes => heroes.find(hero => hero.id === id));
+  }
+
+  search(term: String): Observable<Hero[]> {
+    return this.http
+      .get(`app/heroes/?name=${term}`)
+      .map((r: Response) => r.json().data as Hero[]);
   }
 
   private handleError(error: any): Promise<any> {
